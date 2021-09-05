@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        body {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        #panel {
+            position: absolute;
+            right: 4%;
+            bottom: 4%;
+            width: 300px;
+            height: 300px;
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        h1 {
+            margin-top: 5px;
+            text-align: center;
+        }
+        #sartlar {
+            width: 80%;
+            height: 180px;
+            border: 1px black solid;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-sizing: border-box;
+            padding: 5px;
+        }
+        .wbtn {
+            margin-top: 10px;
+            outline: none;
+            border: none;
+            width: 50%;
+            height: 30px;
+            background-color: rgb(14, 240, 25);
+            border-radius: 10px;
+            color: black;
+            font-size: large;
+            font-family: URW Chancery L, cursive;
+        }
+        .wbtn:hover {
+            background-color: rgb(34, 197, 42);
+        }
+        
+    </style>
+  </head>
+  <body >
+    <div id="panel" style="display: none;">
+        <h1>wiro_scooter</h1>
+        <div id="sartlar">
+            <p>1.1 If you die we dont care</p>
+            <p>1.2 If you lose the bike you must pay 5000.0 $</p>
+            <p>2.1 If you forget to lock the bike you are an idiot</p>
+            <p>3.1 I am accepting wiro_scooter can steal ohmmm I mean take money from my bank account</p>
+        </div>
+        <button class="wbtn" id="sartkblbtn">I agree</button>
+        <div id="chholder" style="display: none; margin-top: 100px;">
+            <input type="checkbox" id="blipch" name="blip">
+            <label style="user-select: none;" for="blipch">Show blips</label>
+        </div>
+        <button class="wbtn" id="kirala" style="display: none;">Rent Closest bike</button>
+        <button class="wbtn" id="kirabitir" style="display: none;">stop rent</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+
+            window.addEventListener('message', function(event) {
+                var item = event.data;
+                if(item.type === "ui") {
+                    if (item.status) {
+                        $("#panel").show();
+                    }
+                    else {
+                        $("#panel").hide();
+                    }
+                }
+            })
+
+            $("#sartkblbtn").on("click", function(){
+                $("#sartlar").hide();
+                $("#sartkblbtn").hide();
+                $("#kirala").show();
+                $("#chholder").show();
+                $("#kirabitir").show();
+            });
+
+            $('#blipch').change(function() {
+                if(this.checked) {
+                    $.post('http://wiro_scooter/blip', JSON.stringify({
+                        status: true,
+                    }));
+                }
+                else {
+                    $.post('http://wiro_scooter/blip', JSON.stringify({
+                        status: false,
+                    }));
+                }
+            });
+
+            $("#kirala").on("click", function(){
+                $("#kirala").attr("disabled", true);
+                $.post('http://wiro_scooter/kirala', JSON.stringify({}));
+                setTimeout(
+                function() 
+                {
+                    $("#kirala").removeAttr("disabled");
+                }, 3000);
+            });
+
+            $("#kirabitir").on("click", function(){
+                $.post('http://wiro_scooter/kirabitir', JSON.stringify({}));
+            });
+
+            document.onkeyup = function (data) {
+                if (data.which == 27) {
+                    $.post('http://wiro_scooter/exit', JSON.stringify({}));
+                    return
+                }
+            };
+        });
+    </script>
+  </body>
+</html>
